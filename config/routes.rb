@@ -1,13 +1,10 @@
 Rails.application.routes.draw do
-  # scope :api, defaults: { format: :json } do
-  #   devise_for :users
-  # end
-
   scope module: 'api' do
     devise_for :users
 
     namespace :v1 do
       resources :articles, only: [:index, :create, :show] do
+        resources :article_likes, only: [:create, :index]
         resources :comments, only: [:create, :index]
       end
     end

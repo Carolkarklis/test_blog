@@ -56,7 +56,12 @@ module Api
             'X-User-Token' => api_token
           }
 
-          create(:article, title: "Article A", user: user)
+          article = create(:article, title: "Article A", user: user)
+
+          5.times do
+            create(:article_like, article: article, user: user )
+          end
+
           create(:article, title: "Article B", user: user)
 
           get v1_articles_path, headers: headers
@@ -65,6 +70,7 @@ module Api
 
           expect(response.code).to eq '200'
           expect(parsed_body.first["title"]).to eq "Article A"
+          expect(parsed_body.first["likes_count"]).to eq 5
           expect(parsed_body.last["title"]).to eq "Article B"
         end
       end
