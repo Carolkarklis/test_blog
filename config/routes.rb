@@ -4,8 +4,10 @@ Rails.application.routes.draw do
 
     namespace :v1 do
       resources :articles, only: [:index, :create, :show] do
-        resources :article_likes, only: [:create, :index]
-        resources :comments, only: [:create, :index]
+        resources :article_likes, only: [:create]
+        resources :comments, only: [:create, :index] do
+          post 'comment_like', controller: 'comments', action: 'like'
+        end
       end
     end
   end

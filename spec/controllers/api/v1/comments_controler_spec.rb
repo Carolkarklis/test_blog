@@ -48,6 +48,26 @@ module Api
           expect(parsed_body.count).to eq 2
         end
       end
+
+      describe 'POST #comment_like' do
+        it "creates like for comment" do
+          api_token = 'f9bfafe5-a812-417d-9d33-686cd88cf6c0'
+          user = create(:user, api_token: api_token)
+          article = create(:article, user: user)
+          comment = create(:comment, user: user, article: article)
+
+          headers = {
+            'X-User-Token' => api_token
+          }
+
+          expect(comment.comment_likes.count).to eq(0)
+
+          post v1_article_comment_comment_like_path(article, comment), headers: headers
+
+          expect(response.code).to eq '200'
+          expect(comment.comment_likes.count).to eq(1)
+        end
+      end
     end
   end
 end

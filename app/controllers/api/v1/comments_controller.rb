@@ -3,6 +3,7 @@
 module Api::V1
   class CommentsController < ApiController
     before_action :set_user, :set_article
+    before_action :set_comment, only: :like
 
     def index
       render json: @article.comments, each_serializer: CommentSerializer
@@ -18,6 +19,16 @@ module Api::V1
       end
     end
 
+    def like
+      @like = CommentLike.new(user_id: @user.id, comment_id: @comment.id)
+
+      if @like.save
+        render json: CommentSerializer.new(@comment).as_json
+      else
+        render json: @like.errors, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def comment_params
@@ -28,6 +39,10 @@ module Api::V1
 
     def set_article
       @article = Article.find(params[:article_id])
+    end
+
+    def set_comment
+      @comment = Comment.find(params[:comment_id])
     end
 
     def set_user
